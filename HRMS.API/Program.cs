@@ -1,7 +1,10 @@
-﻿using HRMS.Application.Interfaces;
+﻿using HRMS.Application.Auth;
+using HRMS.Application.Department;
 using HRMS.Application.Services;
+using HRMS.Domain.Entities;
 using HRMS.Infrastructure.Data;
-using HRMS.Infrastructure.Repositories;
+using HRMS.Infrastructure.Repositories.Auth;
+using HRMS.Infrastructure.Repositories.Department;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,11 +25,11 @@ namespace HRMS.API
             builder.Services.AddDbContext<HRMSDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-            // Services
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+
 
             // JWT Authentication
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");

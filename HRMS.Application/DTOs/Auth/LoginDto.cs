@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HRMS.Application.DTOs
+namespace HRMS.Application.DTOs.Auth
 {
     public class LoginDto
     {

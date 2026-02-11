@@ -1,4 +1,4 @@
-﻿using HRMS.Application.Interfaces;
+﻿using HRMS.Application.Auth;
 using HRMS.Domain.Entities;
 using HRMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HRMS.Infrastructure.Repositories
+namespace HRMS.Infrastructure.Repositories.Auth
 {
     public class UserRepository : IUserRepository
     {

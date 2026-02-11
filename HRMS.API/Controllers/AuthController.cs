@@ -1,5 +1,5 @@
-﻿using HRMS.Application.DTOs;
-using HRMS.Application.Interfaces;
+﻿using HRMS.Application.Auth;
+using HRMS.Application.DTOs.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
