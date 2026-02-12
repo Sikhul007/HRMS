@@ -13,6 +13,7 @@ namespace HRMS.Domain.Enums
         InActive = 3,
         Active = 4,
         Resigned = 5,
-        Terminated = 6
+        Terminated = 6,
+        Probation = 7
     }
 }

@@ -10,5 +10,6 @@ namespace HRMS.Application.Interfaces
     {
         Task<string> GenerateMonthlyPayrollAsync(int month, int year);
         Task<object> GetMonthlyReportAsync(int month, int year);
+        Task<object?> GetEmployeePayrollAsync(int employeeId, int month, int year);
     }
 }

@@ -110,5 +110,28 @@ namespace HRMS.Application.Services
             };
         }
 
+        public async Task<object?> GetEmployeePayrollAsync(int employeeId, int month, int year)
+        {
+            var payrolls = await _payrollRepository.GetByMonthAsync(month, year);
+
+            var payroll = payrolls.FirstOrDefault(p => p.EmployeeId == employeeId);
+
+            if (payroll == null)
+                return null;
+
+            return new
+            {
+                Employee = $"{payroll.Employee.FirstName} {payroll.Employee.LastName}",
+                Month = payroll.Month,
+                Year = payroll.Year,
+                GrossSalary = payroll.BasicSalary + payroll.Allowance + payroll.Bonus,
+                Deduction = payroll.Deduction,
+                Tax = payroll.Tax,
+                NetSalary = payroll.NetSalary,
+                Status = payroll.Status
+            };
+        }
+
+
     }
 }
