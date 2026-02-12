@@ -8,8 +8,11 @@ namespace HRMS.Domain.Enums
 {
     public enum EmploymentStatus
     {
-        Active = 1,
-        Resigned = 2,
-        Terminated = 3
+        Permanent = 1,
+        Contract = 2,
+        InActive = 3,
+        Active = 4,
+        Resigned = 5,
+        Terminated = 6
     }
 }

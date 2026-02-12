@@ -4,9 +4,7 @@ using HRMS.Application.Interfaces;
 using HRMS.Application.Services;
 using HRMS.Domain.Entities;
 using HRMS.Infrastructure.Data;
-using HRMS.Infrastructure.Repositories.Auth;
-using HRMS.Infrastructure.Repositories.Department;
-using HRMS.Infrastructure.Repositories.Employee;
+using HRMS.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -34,6 +32,10 @@ namespace HRMS.API
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+            builder.Services.AddScoped<ISalaryRepository, SalaryRepository>();
+            builder.Services.AddScoped<ISalaryService, SalaryService>();
+            builder.Services.AddScoped<IPayrollRepository, PayrollRepository>();
+            builder.Services.AddScoped<IPayrollService, PayrollService>();
 
 
 

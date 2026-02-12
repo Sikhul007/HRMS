@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HRMS.Infrastructure.Repositories.Department
+namespace HRMS.Infrastructure.Repositories
 {
     public class DepartmentRepository : IDepartmentRepository
     {
@@ -18,14 +18,14 @@ namespace HRMS.Infrastructure.Repositories.Department
             _context = context;
         }
 
-        public async Task<List<Domain.Entities.Department>> GetAllAsync()
+        public async Task<List<Department>> GetAllAsync()
         {
             return await _context.Departments
                 .Where(d => d.IsActive)
                 .ToListAsync();
         }
 
-        public async Task<Domain.Entities.Department?> GetByIdAsync(int id)
+        public async Task<Department?> GetByIdAsync(int id)
         {
             return await _context.Departments
                 .FirstOrDefaultAsync(d => d.Id == id && d.IsActive);
@@ -37,12 +37,12 @@ namespace HRMS.Infrastructure.Repositories.Department
                 .AnyAsync(d => d.Name == name && d.IsActive);
         }
 
-        public async Task AddAsync(Domain.Entities.Department department)
+        public async Task AddAsync(Department department)
         {
             await _context.Departments.AddAsync(department);
         }
 
-        public void Update(Domain.Entities.Department department)
+        public void Update(Department department)
         {
             _context.Departments.Update(department);
         }

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HRMS.Infrastructure.Repositories.Auth
+namespace HRMS.Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
