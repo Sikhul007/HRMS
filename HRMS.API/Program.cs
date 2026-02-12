@@ -1,13 +1,16 @@
 ﻿using HRMS.Application.Auth;
 using HRMS.Application.Department;
+using HRMS.Application.Interfaces;
 using HRMS.Application.Services;
 using HRMS.Domain.Entities;
 using HRMS.Infrastructure.Data;
 using HRMS.Infrastructure.Repositories.Auth;
 using HRMS.Infrastructure.Repositories.Department;
+using HRMS.Infrastructure.Repositories.Employee;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace HRMS.API
@@ -29,6 +32,9 @@ namespace HRMS.API
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+
 
 
             // JWT Authentication
@@ -60,7 +66,48 @@ namespace HRMS.API
 
             // Swagger
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            //builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "HRMS.API",
+                    Version = "v1"
+                });
+
+                // 🔐 Add JWT Authentication Support
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Enter: Bearer {your JWT token}"
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+            });
+
+
+
+
+
+
+
 
             // ✅ NOW build the app (after all services are registered)
             var app = builder.Build();
