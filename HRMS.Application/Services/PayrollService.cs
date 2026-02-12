@@ -28,21 +28,54 @@ namespace HRMS.Application.Services
 
         public async Task<string> GenerateMonthlyPayrollAsync(int month, int year)
         {
+            var startOfMonth = new DateTime(year, month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+            var totalDaysInMonth = DateTime.DaysInMonth(year, month);
+
             var query = new DTOs.Employee.EmployeeQueryParams();
-            var (employees, _) = await _employeeRepository.GetAllAsync(query);
+            //var (employees, _) = await _employeeRepository.GetAllAsync(query);
+            var employees = await _employeeRepository.GetAllActiveAsync();
+
 
             foreach (var employee in employees)
             {
+                // Skip if payroll already generated
                 if (await _payrollRepository.ExistsAsync(employee.Id, month, year))
                     continue;
 
-                var salary = await _salaryRepository.GetActiveSalaryAsync(employee.Id);
+                // Skip if employee joined after this month
+                if (employee.JoiningDate > endOfMonth)
+                    continue;
+
+                // Get salary valid for that month
+                var salary = await _salaryRepository
+                    .GetSalaryForMonthAsync(employee.Id, month, year);
+
                 if (salary == null)
                     continue;
 
-                var tax = CalculateTax(salary.BasicSalary);
-                var netSalary = (salary.BasicSalary + salary.Allowance + salary.Bonus)
-                                - salary.Deduction - tax;
+                // Determine actual working start date
+                var actualWorkStart = employee.JoiningDate > startOfMonth
+                    ? employee.JoiningDate
+                    : startOfMonth;
+
+                var workedDays = (endOfMonth - actualWorkStart).Days + 1;
+
+                // Calculate gross salary
+                var grossMonthly = salary.BasicSalary + salary.Allowance + salary.Bonus;
+
+                // Pro-rated gross
+                var dailyGross = grossMonthly / totalDaysInMonth;
+                var proRatedGross = dailyGross * workedDays;
+
+                // Pro-rated deduction
+                var dailyDeduction = salary.Deduction / totalDaysInMonth;
+                var proRatedDeduction = dailyDeduction * workedDays;
+
+                // Tax based on pro-rated gross
+                var tax = CalculateTax(proRatedGross);
+
+                var netSalary = proRatedGross - proRatedDeduction - tax;
 
                 var payroll = new Payroll
                 {
@@ -64,8 +97,10 @@ namespace HRMS.Application.Services
             }
 
             await _payrollRepository.SaveChangesAsync();
+
             return "Payroll generated successfully.";
         }
+
 
         private decimal CalculateTax(decimal basicSalary)
         {

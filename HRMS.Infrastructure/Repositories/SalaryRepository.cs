@@ -47,5 +47,24 @@ namespace HRMS.Infrastructure.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<SalaryStructure?> GetSalaryForMonthAsync(
+    int employeeId, int month, int year)
+        {
+            var startOfMonth = new DateTime(year, month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+            return await _context.SalaryStructures
+                .Where(s =>
+                    s.EmployeeId == employeeId &&
+                    s.IsActive &&
+                    s.EffectiveFrom <= endOfMonth &&
+                    (s.EffectiveTo == null || s.EffectiveTo >= startOfMonth)
+                )
+                .OrderByDescending(s => s.EffectiveFrom)
+                .FirstOrDefaultAsync();
+        }
+
+
     }
 }

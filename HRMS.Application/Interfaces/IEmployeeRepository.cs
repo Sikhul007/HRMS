@@ -14,6 +14,7 @@ namespace HRMS.Application.Interfaces
         Task<bool> ExistsByEmailAsync(string email);
         Task<Employee?> GetByIdAsync(int id);
         Task<(List<Employee>, int totalCount)> GetAllAsync(EmployeeQueryParams query);
+        Task<List<Employee>> GetAllActiveAsync();
         Task AddAsync(Employee employee);
         void Update(Employee employee);
         Task SaveChangesAsync();

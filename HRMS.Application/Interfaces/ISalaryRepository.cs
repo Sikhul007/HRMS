@@ -14,5 +14,7 @@ namespace HRMS.Application.Interfaces
         Task AddAsync(SalaryStructure salary);
         void Update(SalaryStructure salary);
         Task SaveChangesAsync();
+        Task<SalaryStructure?> GetSalaryForMonthAsync(int employeeId, int month, int year);
+
     }
 }

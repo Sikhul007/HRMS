@@ -1,5 +1,6 @@
 ﻿using HRMS.Application.DTOs.Employee;
 using HRMS.Application.Interfaces;
+using HRMS.Domain.Entities;
 using HRMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -31,14 +32,14 @@ namespace HRMS.Infrastructure.Repositories
                 .AnyAsync(e => e.Email == email && e.IsActive);
         }
 
-        public async Task<Domain.Entities.Employee?> GetByIdAsync(int id)
+        public async Task<Employee?> GetByIdAsync(int id)
         {
             return await _context.Employees
                 .Include(e => e.Department)
                 .FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
         }
 
-        public async Task<(List<Domain.Entities.Employee>, int)> GetAllAsync(EmployeeQueryParams query)
+        public async Task<(List<Employee>, int)> GetAllAsync(EmployeeQueryParams query)
         {
             var employees = _context.Employees
                 .Include(e => e.Department)
@@ -70,12 +71,20 @@ namespace HRMS.Infrastructure.Repositories
             return (result, totalCount);
         }
 
-        public async Task AddAsync(Domain.Entities.Employee employee)
+        public async Task<List<Employee>> GetAllActiveAsync()
+        {
+            return await _context.Employees
+                .Where(e => e.IsActive)
+                .ToListAsync();
+        }
+
+
+        public async Task AddAsync(Employee employee)
         {
             await _context.Employees.AddAsync(employee);
         }
 
-        public void Update(Domain.Entities.Employee employee)
+        public void Update(Employee employee)
         {
             _context.Employees.Update(employee);
         }
