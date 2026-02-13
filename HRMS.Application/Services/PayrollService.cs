@@ -102,14 +102,49 @@ namespace HRMS.Application.Services
         }
 
 
-        private decimal CalculateTax(decimal basicSalary)
+        private decimal CalculateTax(decimal monthlyTaxableIncome)
         {
-            // Example simple tax logic
-            if (basicSalary > 50000)
-                return basicSalary * 0.10m;
+            if (monthlyTaxableIncome <= 0)
+                return 0;
 
-            return basicSalary * 0.05m;
+            // 1️⃣ Convert monthly income to yearly
+            var annualIncome = monthlyTaxableIncome * 12;
+            decimal tax = 0;
+
+            // 2️⃣ Apply slabs
+            if (annualIncome > 375000)
+            {
+                var taxable = Math.Min(annualIncome - 375000, 300000);
+                tax += taxable * 0.10m;
+            }
+
+            if (annualIncome > 675000)
+            {
+                var taxable = Math.Min(annualIncome - 675000, 400000);
+                tax += taxable * 0.15m;
+            }
+
+            if (annualIncome > 1075000)
+            {
+                var taxable = Math.Min(annualIncome - 1075000, 500000);
+                tax += taxable * 0.20m;
+            }
+
+            if (annualIncome > 1575000)
+            {
+                var taxable = Math.Min(annualIncome - 1575000, 2000000);
+                tax += taxable * 0.25m;
+            }
+
+            if (annualIncome > 3575000)
+            {
+                tax += (annualIncome - 3575000) * 0.30m;
+            }
+
+            // 3️⃣ Convert yearly tax back to monthly
+            return Math.Round(tax / 12, 2);
         }
+
 
         public async Task<object> GetMonthlyReportAsync(int month, int year)
         {
